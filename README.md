@@ -40,3 +40,33 @@ steps:
       - docker#v5.13.0:
           image: ruby:4.0
 ```
+
+#### Example 01
+
+Buildkite with multiple steps (build, test)
+
+YAML Steps (complete example)
+
+```
+steps:
+  - key: "key_00"
+    command:
+    - echo "Starting script_00.rb"
+    - ruby script_00.rb
+    label: "It could be the build step"
+    plugins:
+      - docker#v5.13.0:
+          image: ruby:4.0
+
+  - key: "key_01"
+    depends_on: ["key_00"]
+    command:
+      - echo "Installing gems"
+      - bundle install --jobs=4 --retry=3
+      - echo "Running rake test"
+      - bundle exec rake test
+    label: "It could be the test step"
+    plugins:
+      - docker#v5.13.0:
+          image: ruby:4.0
+```
